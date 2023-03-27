@@ -3,21 +3,23 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
+	"io/fs"
 	"os"
 )
 
 type Options struct {
-	countlines bool
-	countwords bool
-	countchars bool
+	CountLines bool
+	CountWords bool
+	CountChars bool
 }
 
 func main() {
 	var options Options
 
-	flag.BoolVar(&options.countlines, "l", false, "print count of lines")
-	flag.BoolVar(&options.countwords, "w", false, "print count of words")
-	flag.BoolVar(&options.countchars, "c", false, "print count of chars")
+	flag.BoolVar(&options.CountLines, "l", false, "print count of lines")
+	flag.BoolVar(&options.CountWords, "w", false, "print count of words")
+	flag.BoolVar(&options.CountChars, "c", false, "print count of chars")
 	flag.Parse()
 
 	args := flag.Args()
@@ -26,36 +28,35 @@ func main() {
 		return
 	}
 
-	if noFlagPassed(options) {
-		printCountWithOptions(Options{true, true, true}, args[0])
-		return
-	}
-
-	printCountWithOptions(options, args[0])
+	PrintCountWithOptions(os.Stdout, os.DirFS("."), options, args[0])
 }
 
-func printCountWithOptions(options Options, fn string) {
-	res, err := CountAllFromFs(os.DirFS("."), fn)
+func PrintCountWithOptions(w io.Writer, fsys fs.FS, options Options, fn string) {
+	if noFlagPassed(options) {
+		options = Options{true, true, true}
+	}
+
+	res, err := CountAllFromFs(fsys, fn)
 	if err != nil {
-		fmt.Printf("./wc: %v", err)
+		fmt.Fprintf(w, "./wc: %v", err)
 		return
 	}
 
 	var output string
-	if options.countlines {
+	if options.CountLines {
 		output = fmt.Sprintf("\t%v", res.Lines)
 	}
-	if options.countwords {
+	if options.CountWords {
 		output = fmt.Sprintf("%v\t%v", output, res.Words)
 	}
-	if options.countchars {
+	if options.CountChars {
 		output = fmt.Sprintf("%v\t%v", output, res.Chars)
 	}
 	output += fmt.Sprintf(" %v", fn)
 
-	fmt.Println(output)
+	fmt.Fprintln(w, output)
 }
 
 func noFlagPassed(options Options) bool {
-	return !options.countlines && !options.countwords && !options.countchars
+	return !options.CountLines && !options.CountWords && !options.CountChars
 }
