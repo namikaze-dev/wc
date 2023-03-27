@@ -9,9 +9,11 @@ import (
 func main() {
 	var options struct {
 		countlines bool
+		countwords bool
 	}
 
-	flag.BoolVar(&options.countlines, "l", true, "print count of lines")
+	flag.BoolVar(&options.countlines, "l", false, "print count of lines")
+	flag.BoolVar(&options.countwords, "w", false, "print count of words")
 	flag.Parse()
 
 	args := flag.Args()
@@ -20,10 +22,27 @@ func main() {
 		return
 	}
 
-	linesCount, err := CountLinesFromFs(os.DirFS("."), args[0])
+	if options.countlines {
+		countlines(args[0])
+	} else if options.countwords {
+		countwords(args[0])
+	}
+}
+
+func countlines(fn string) {
+	linesCount, err := CountLinesFromFs(os.DirFS("."), fn)
 	if err != nil {
 		fmt.Printf("./wc: %v", err)
 	} else {
-		fmt.Printf("\t\t%v %v", linesCount, args[0])
+		fmt.Printf("\t\t%v %v", linesCount, fn)
+	}
+}
+
+func countwords(fn string) {
+	wordsCount, err := CountWordsFromFs(os.DirFS("."), fn)
+	if err != nil {
+		fmt.Printf("./wc: %v", err)
+	} else {
+		fmt.Printf("\t\t%v %v", wordsCount, fn)
 	}
 }
