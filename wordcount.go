@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io/fs"
 	"os"
+	"strings"
 )
 
 func CountLinesFromFs(fileSys fs.FS, fn string) (int, error) {
@@ -12,6 +13,14 @@ func CountLinesFromFs(fileSys fs.FS, fn string) (int, error) {
 		return 0, err
 	}
 	return countLines(f), nil
+}
+
+func CountWordsFromFs(fileSys fs.FS, fn string) (int, error) {
+	f, err := openFile(fileSys, fn)
+	if err != nil {
+		return 0, err
+	}
+	return countWords(f), nil
 }
 
 func openFile(fileSys fs.FS, fn string) (fs.File, error) {
@@ -37,6 +46,15 @@ func countLines(f fs.File) int {
 	scn := bufio.NewScanner(f)
 	for scn.Scan() {
 		count++
+	}
+	return count
+}
+
+func countWords(f fs.File) int {
+	var count int
+	scn := bufio.NewScanner(f)
+	for scn.Scan() {
+		count += len(strings.Fields(scn.Text()))
 	}
 	return count
 }
