@@ -1,3 +1,3 @@
-module github.com/namikaze-dev/wc2
+module github.com/namikaze-dev/wc
 
 go 1.19
