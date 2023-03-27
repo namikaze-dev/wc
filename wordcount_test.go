@@ -56,6 +56,7 @@ func TestCountAll(t *testing.T) {
 
 var testFS = fstest.MapFS{
 	"file.txt": {Data: []byte("line 1\n\nline 2\nline 3\tlast line 4")},
+	"file2.txt": {Data: []byte("line  liner\n")},
 	"dir": {Mode: fs.ModeDir},
 }
 

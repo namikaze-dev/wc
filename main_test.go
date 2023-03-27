@@ -105,3 +105,14 @@ func TestPrintCountFromReader(t *testing.T) {
 		t.Errorf("got %q want %q", got, want)
 	}
 }
+
+func TestPrintCountFromArgs(t *testing.T) {
+	stdout := &bytes.Buffer{}
+	main.PrintCountFromArgs(stdout, testFS, main.Options{}, []string{"file.txt", "file2.txt"})
+
+	got := stdout.String()
+	want := "\t4\t9\t33 file.txt\n\t1\t2\t12 file2.txt\n\t5\t11\t45 total\n"
+	if got != want {
+		t.Errorf("got %q want %q", got, want)
+	}
+}

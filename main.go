@@ -29,10 +29,23 @@ func main() {
 		return
 	}
 
-	PrintCountWithOptions(os.Stdout, os.DirFS("."), options, args[0])
+	PrintCountFromArgs(os.Stdout, os.DirFS("."), options, args)
 }
 
-func PrintCountWithOptions(w io.Writer, fsys fs.FS, options Options, fn string) {
+func PrintCountFromArgs(w io.Writer, fsys fs.FS, options Options, files []string) {
+	var total CountResult
+	for _, fn := range files {
+		res := PrintCountWithOptions(w, fsys, options, fn)
+		total.Lines += res.Lines
+		total.Words += res.Words
+		total.Chars += res.Chars
+	}
+	if len(files) > 1 {
+		fmt.Fprintf(w, "\t%v\t%v\t%v total\n", total.Lines, total.Words, total.Chars)
+	}
+}
+
+func PrintCountWithOptions(w io.Writer, fsys fs.FS, options Options, fn string) CountResult {
 	if noFlagPassed(options) {
 		options = Options{true, true, true}
 	}
@@ -40,7 +53,6 @@ func PrintCountWithOptions(w io.Writer, fsys fs.FS, options Options, fn string) 
 	res, err := CountAllFromFs(fsys, fn)
 	if err != nil {
 		fmt.Fprintf(w, "wc: %v: %v\n", fn, err)
-		return
 	}
 
 	var output string
@@ -56,6 +68,7 @@ func PrintCountWithOptions(w io.Writer, fsys fs.FS, options Options, fn string) 
 	output += fmt.Sprintf(" %v", fn)
 
 	fmt.Fprintln(w, output)
+	return res
 }
 
 func PrintCountFromReader(w io.Writer, r io.Reader) {
