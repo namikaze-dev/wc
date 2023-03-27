@@ -93,3 +93,15 @@ func TestPrintCountWithOptionsFailures(t *testing.T) {
 		}
 	})
 }
+
+func TestPrintCountFromReader(t *testing.T) {
+	stdout := &bytes.Buffer{}
+	input := strings.NewReader("line 1\n\nline 2\nline 3\tlast line 4")
+	main.PrintCountFromReader(stdout, input)
+
+	got := stdout.String()
+	want := "\t4\t9\t33\n"
+	if got != want {
+		t.Errorf("got %q want %q", got, want)
+	}
+}

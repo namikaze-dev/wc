@@ -57,6 +57,11 @@ func PrintCountWithOptions(w io.Writer, fsys fs.FS, options Options, fn string) 
 	fmt.Fprintln(w, output)
 }
 
+func PrintCountFromReader(w io.Writer, r io.Reader) {
+	res := CountAll(r)
+	fmt.Fprintf(w, "\t%v\t%v\t%v\n", res.Lines, res.Words, res.Chars)
+}
+
 func noFlagPassed(options Options) bool {
 	return !options.CountLines && !options.CountWords && !options.CountChars
 }
