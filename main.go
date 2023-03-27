@@ -6,12 +6,14 @@ import (
 	"os"
 )
 
+type Options struct {
+	countlines bool
+	countwords bool
+	countchars bool
+}
+
 func main() {
-	var options struct {
-		countlines bool
-		countwords bool
-		countchars bool
-	}
+	var options Options
 
 	flag.BoolVar(&options.countlines, "l", false, "print count of lines")
 	flag.BoolVar(&options.countwords, "w", false, "print count of words")
@@ -25,53 +27,33 @@ func main() {
 	}
 
 	if noFlagPassed(options.countlines, options.countwords, options.countchars) {
-		countall(args[0])
+		printCountWithOptions(Options{true, true, true}, args[0])
+		return
 	}
 
-	if options.countlines {
-		countlines(args[0])
-	} else if options.countwords {
-		countwords(args[0])
-	} else if options.countchars {
-		countchars(args[0])
-	}
+	printCountWithOptions(options, args[0])
 }
 
-func countlines(fn string) {
-	res, err := CountAllFromFs(os.DirFS("."), fn)
-	if err != nil {
-		fmt.Printf("./wc: %v", err)
-	} else {
-		fmt.Printf("\t\t%v %v", res.Lines, fn)
-	}
-}
-
-func countwords(fn string) {
-	res, err := CountAllFromFs(os.DirFS("."), fn)
-	if err != nil {
-		fmt.Printf("./wc: %v", err)
-	} else {
-		fmt.Printf("\t\t%v %v", res.Words, fn)
-	}
-}
-
-func countchars(fn string) {
-	res, err := CountAllFromFs(os.DirFS("."), fn)
-	if err != nil {
-		fmt.Printf("./wc: %v", err)
-	} else {
-		fmt.Printf("\t\t%v %v", res.Chars, fn)
-	}
-}
-
-func countall(fn string) {
+func printCountWithOptions(options Options, fn string) {
 	res, err := CountAllFromFs(os.DirFS("."), fn)
 	if err != nil {
 		fmt.Printf("./wc: %v", err)
 		return
-	} 
+	}
 
-	fmt.Printf("\t%v\t%v\t%v %v", res.Lines, res.Words, res.Chars, fn)
+	var output string
+	if options.countlines {
+		output = fmt.Sprintf("\t%v", res.Lines)
+	}
+	if options.countwords {
+		output = fmt.Sprintf("%v\t%v", output, res.Words)
+	}
+	if options.countchars {
+		output = fmt.Sprintf("%v\t%v", output, res.Chars)
+	}
+	output += fmt.Sprintf(" %v", fn)
+
+	fmt.Println(output)
 }
 
 func noFlagPassed(clines, cwords, cchars bool) bool {
