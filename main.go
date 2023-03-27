@@ -25,6 +25,7 @@ func main() {
 	args := flag.Args()
 
 	if len(args) == 0 {
+		PrintCountFromReader(os.Stdout, os.Stdin)
 		return
 	}
 
