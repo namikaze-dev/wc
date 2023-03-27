@@ -26,7 +26,7 @@ func main() {
 		return
 	}
 
-	if noFlagPassed(options.countlines, options.countwords, options.countchars) {
+	if noFlagPassed(options) {
 		printCountWithOptions(Options{true, true, true}, args[0])
 		return
 	}
@@ -56,6 +56,6 @@ func printCountWithOptions(options Options, fn string) {
 	fmt.Println(output)
 }
 
-func noFlagPassed(clines, cwords, cchars bool) bool {
-	return !clines && !cwords && !cchars
+func noFlagPassed(options Options) bool {
+	return !options.countlines && !options.countwords && !options.countchars
 }
