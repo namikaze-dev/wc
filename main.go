@@ -38,29 +38,29 @@ func main() {
 }
 
 func countlines(fn string) {
-	linesCount, err := CountLinesFromFs(os.DirFS("."), fn)
+	res, err := CountAllFromFs(os.DirFS("."), fn)
 	if err != nil {
 		fmt.Printf("./wc: %v", err)
 	} else {
-		fmt.Printf("\t\t%v %v", linesCount, fn)
+		fmt.Printf("\t\t%v %v", res.Lines, fn)
 	}
 }
 
 func countwords(fn string) {
-	wordsCount, err := CountWordsFromFs(os.DirFS("."), fn)
+	res, err := CountAllFromFs(os.DirFS("."), fn)
 	if err != nil {
 		fmt.Printf("./wc: %v", err)
 	} else {
-		fmt.Printf("\t\t%v %v", wordsCount, fn)
+		fmt.Printf("\t\t%v %v", res.Words, fn)
 	}
 }
 
 func countchars(fn string) {
-	chars, err := CountCharsFromFs(os.DirFS("."), fn)
+	res, err := CountAllFromFs(os.DirFS("."), fn)
 	if err != nil {
 		fmt.Printf("./wc: %v", err)
 	} else {
-		fmt.Printf("\t\t%v %v", chars, fn)
+		fmt.Printf("\t\t%v %v", res.Chars, fn)
 	}
 }
 
