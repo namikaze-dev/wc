@@ -10,10 +10,12 @@ func main() {
 	var options struct {
 		countlines bool
 		countwords bool
+		countchars bool
 	}
 
 	flag.BoolVar(&options.countlines, "l", false, "print count of lines")
 	flag.BoolVar(&options.countwords, "w", false, "print count of words")
+	flag.BoolVar(&options.countchars, "c", false, "print count of chars")
 	flag.Parse()
 
 	args := flag.Args()
@@ -26,6 +28,8 @@ func main() {
 		countlines(args[0])
 	} else if options.countwords {
 		countwords(args[0])
+	} else if options.countchars {
+		countchars(args[0])
 	}
 }
 
@@ -44,5 +48,14 @@ func countwords(fn string) {
 		fmt.Printf("./wc: %v", err)
 	} else {
 		fmt.Printf("\t\t%v %v", wordsCount, fn)
+	}
+}
+
+func countchars(fn string) {
+	chars, err := CountCharsFromFs(os.DirFS("."), fn)
+	if err != nil {
+		fmt.Printf("./wc: %v", err)
+	} else {
+		fmt.Printf("\t\t%v %v", chars, fn)
 	}
 }
