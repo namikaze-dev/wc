@@ -39,7 +39,7 @@ func PrintCountWithOptions(w io.Writer, fsys fs.FS, options Options, fn string) 
 
 	res, err := CountAllFromFs(fsys, fn)
 	if err != nil {
-		fmt.Fprintf(w, "./wc: %v", err)
+		fmt.Fprintf(w, "wc: %v: %v\n", fn, err)
 		return
 	}
 
