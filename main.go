@@ -24,6 +24,10 @@ func main() {
 		return
 	}
 
+	if noFlagPassed(options.countlines, options.countwords, options.countchars) {
+		countall(args[0])
+	}
+
 	if options.countlines {
 		countlines(args[0])
 	} else if options.countwords {
@@ -58,4 +62,18 @@ func countchars(fn string) {
 	} else {
 		fmt.Printf("\t\t%v %v", chars, fn)
 	}
+}
+
+func countall(fn string) {
+	res, err := CountAllFromFs(os.DirFS("."), fn)
+	if err != nil {
+		fmt.Printf("./wc: %v", err)
+		return
+	} 
+
+	fmt.Printf("\t%v\t%v\t%v %v", res.Lines, res.Words, res.Chars, fn)
+}
+
+func noFlagPassed(clines, cwords, cchars bool) bool {
+	return !clines && !cwords && !cchars
 }
